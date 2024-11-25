@@ -9,6 +9,8 @@ from app.services.category_service import getAllCategories
 
 from app.models.product import Product
 
+from app.data_access import product_supabase as db
+
 router = APIRouter()
 
 # set location for templates
@@ -50,3 +52,8 @@ def postProduct(request: Request, productData: Annotated[Product, Form()]) :
 def delProduct(request: Request, id: int):
     deleteProduct(id)
     return templates.TemplateResponse("product/partials/product_list.html", {"request": request, "products": getAllProducts()})
+
+@router.get("/category/{id}")
+async def getProductsByCategory(request: Request, id: int):
+    products = db.dataGetProductsByCategory(id)
+    return templates.TemplateResponse("/product/partials/product_list.html", {"request": request, "products": products})
